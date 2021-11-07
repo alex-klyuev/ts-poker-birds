@@ -3,11 +3,12 @@ const express = require('express');
 const path = require('path');
 
 // initialize and connect to database
-require('../database');
+require('./database');
 const controller = require('./controller');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
+
 app.use(express.json());
 
 // if they go direct to the website - will reroute to gameId = 0

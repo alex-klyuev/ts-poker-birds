@@ -1,9 +1,9 @@
-const GameState = require('../database/GameState');
+const GameState = require('./database/GameState');
 
 const getState = (req, res) => {
   GameState.findById(req.params.gameId, (err, result) => {
     if (err) {
-      res.status(500).send(500);
+      res.sendStatus(500);
     } else {
       res.status(200).send(result);
     }
@@ -19,7 +19,7 @@ const updateState = (req, res) => {
   };
   const callback = (err, result) => {
     if (err) {
-      res.status(500).send(500);
+      res.sendStatus(500);
     } else {
       res.status(201).send(result);
     }
