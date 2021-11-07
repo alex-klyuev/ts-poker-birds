@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import GF from '../../gameLogic/gameFunctions';
+import GF from '../../gameLogic/helperFunctions';
 
 const OuterContainer = styled.div`
   margin-top: 30px;

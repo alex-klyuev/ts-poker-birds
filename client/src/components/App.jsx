@@ -16,8 +16,8 @@ import StartUpForm from './StartUpForm';
 import PlayerContainer from './PlayerContainer';
 import TableContainer from './TableContainer';
 import MessageBox from './MessageBox';
-import GF from '../gameLogic/gameFunctions';
-import Player from '../gameLogic/Player';
+import GF from '../gameLogic/helperFunctions';
+import Player from '../gameLogic/classes/Player';
 
 class App extends React.Component {
   constructor(props) {
