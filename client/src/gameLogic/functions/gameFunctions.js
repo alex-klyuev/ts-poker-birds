@@ -52,25 +52,6 @@ const convertToCents = (value) => {
   return value;
 };
 
-// function to toggle the various methods corresponding to player actions
-const handlePlayerAction = (action, PG) => {
-  // eslint-disable-next-line default-case
-  switch (action[0]) {
-    case 'call':
-      PG.playerObjectArray[PG.turn].call(PG);
-      break;
-    case 'raise':
-      PG.playerObjectArray[PG.turn].raise(action[1], PG);
-      break;
-    case 'fold':
-      PG.playerObjectArray[PG.turn].fold();
-      break;
-    case 'check':
-      PG.playerObjectArray[PG.turn].check();
-      break;
-  }
-};
-
 // Action round ending conditions fall into two categories:
 //  1. "No-raise": where there has been no raise and everyone checks or folds,
 //  or in the case of the pre-flop, calls, checks, or folds.
@@ -218,7 +199,6 @@ export default {
   postBlinds,
   convertToDollars,
   convertToCents,
-  handlePlayerAction,
   checkActionRoundEndingCondition,
   checkDealerRoundEndingCondition,
   refreshActionRound,
