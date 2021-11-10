@@ -5,14 +5,13 @@ export class Board {
   // the index of the next open spot on the board
   index: number;
 
-  constructor() {
-    this.cards = [];
-    this.index = 0;
+  constructor(cards = [], index = 0) {
+    this.cards = cards;
+    this.index = index;
   }
 
   iterateIndex(): void {
     const { index } = this;
     this.index = index === 4 ? 0 : index + 1;
-    console.log(this.index);
   }
 }

@@ -7,9 +7,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 // classes & functions
-import  { PokerGame, Player } from '../gameLogic/classes';
+import  { PokerGame, Player, Board } from '../gameLogic/classes';
 import GF from '../gameLogic/functions';
-import { addToBoard, flop, showdown } from '../gameLogic/functions';
+import { addToBoard, flop, showdown, rankToHandStr } from '../gameLogic/functions';
 // components
 import StartUpForm from './StartUpForm';
 import PlayerContainer from './PlayerContainer';
@@ -174,8 +174,6 @@ class App extends React.Component {
 
       // the difference on the river is the opportunity for a showdown
       if (GF.checkActionRoundEndingCondition(PG)) {
-        console.log(PG);
-
         // set the winning hand rank and its player index
         const winHandRank = showdown(PG);
 
@@ -185,7 +183,7 @@ class App extends React.Component {
 
         // state the winner and how they won
         PG.message = `Player ${PG.playerObjectArray[winHandRank.playerIndex].ID}`;
-        PG.message += ` won with a ${GF.rankToHandStr(winHandRank[0])}`;
+        PG.message += ` won with a ${rankToHandStr(winHandRank[0])}`;
 
         // reset the dealer round
         GF.refreshDealerRound(PG);
@@ -300,6 +298,10 @@ class App extends React.Component {
       Object.assign(target, source);
       PG.playerObjectArray[i] = target;
     }
+
+    // assign board data to class as well to get the iterateIndex method
+    const { cards, index } = PG.board;
+    PG.board = new Board(cards, index);
 
     return PG;
   }
