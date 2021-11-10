@@ -1,53 +1,34 @@
-/* eslint-disable no-console */
-/* eslint-disable no-param-reassign */
-
-// TO-DO: Remove these later
-/* eslint-disable class-methods-use-this */
-/* eslint-disable react/no-unused-state */
-
 // --- ACRONYMS ---
 // PG = poker game -> replacement for the state for use within functions
 // GF = game functions
 
+// libs
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+// classes & functions
+import  { PokerGame, Player } from '../gameLogic/classes';
+import GF from '../gameLogic/functions';
+import { addToBoard, flop, showdown } from '../gameLogic/functions';
+// components
 import StartUpForm from './StartUpForm';
 import PlayerContainer from './PlayerContainer';
 import TableContainer from './TableContainer';
 import MessageBox from './MessageBox';
-import GF from '../gameLogic/helperFunctions';
-import Player from '../gameLogic/classes/Player';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
+    // gameId associated with session url and backend
     const { gameId } = this.props;
 
-    // GAME STATE is managed here
-    this.state = {
-      _id: gameId,
-      gameUnderway: false,
-      playerObjectArray: [],
-      numPlayers: 0,
-      buyIn: 0,
-      smallBlind: 0,
-      bigBlind: 0,
-      dealer: 0,
-      turn: 0,
-      pot: 0,
-      // 0 = pre-flop, 1 = flop, 2 = turn, 3 = river
-      actionRoundState: 0,
-      board: ['', '', '', '', ''],
-      deckArray: [],
-      deckColor: '',
-      minRaise: 0,
-      previousBet: 0,
-      allowCheck: false,
-      message: '',
-    };
+    // The React app state is mapped to an instance of the Poker Game class
+    // For ease of use, this object is passed in its entirety to all functions
+    // and state modifiers
+    this.state = new PokerGame(gameId);
 
+    // function bindings
     this.registerNumPlayers = this.registerNumPlayers.bind(this);
     this.registerBuyIn = this.registerBuyIn.bind(this);
     this.registerSmallBlind = this.registerSmallBlind.bind(this);
@@ -55,7 +36,6 @@ class App extends React.Component {
     this.startGame = this.startGame.bind(this);
     this.endGame = this.endGame.bind(this);
     this.handlePlayerAction = this.handlePlayerAction.bind(this);
-    // this.handleRaise = this.handleRaise.bind(this);
   }
 
   componentDidMount() {
@@ -163,7 +143,7 @@ class App extends React.Component {
       // check if action round is done
       if (GF.checkActionRoundEndingCondition(PG)) {
         // if so, add 3 cards to the board
-        GF.flop(PG);
+        flop(PG);
         // remaining code that is the same between each action round
         GF.refreshActionRound(PG);
         PG.actionRoundState += 1;
@@ -178,7 +158,7 @@ class App extends React.Component {
       }
 
       if (GF.checkActionRoundEndingCondition(PG)) {
-        GF.addToBoard(PG); // turn & river
+        addToBoard(PG); // turn & river
         GF.refreshActionRound(PG);
         PG.actionRoundState += 1;
       }
@@ -194,8 +174,10 @@ class App extends React.Component {
 
       // the difference on the river is the opportunity for a showdown
       if (GF.checkActionRoundEndingCondition(PG)) {
+        console.log(PG);
+
         // set the winning hand rank and its player index
-        const winHandRank = GF.showdown(PG);
+        const winHandRank = showdown(PG);
 
         // give the player the pot and reset it to 0
         PG.playerObjectArray[winHandRank.playerIndex].stack += PG.pot;
@@ -294,26 +276,7 @@ class App extends React.Component {
 
   endGame() {
     const { gameId } = this.props;
-    const PG = {
-      _id: gameId,
-      gameUnderway: false,
-      playerObjectArray: [],
-      numPlayers: 0,
-      buyIn: 0,
-      smallBlind: 0,
-      bigBlind: 0,
-      dealer: 0,
-      turn: 0,
-      pot: 0,
-      actionRoundState: 0,
-      board: ['', '', '', '', ''],
-      deckArray: [],
-      deckColor: '',
-      minRaise: 0,
-      previousBet: 0,
-      allowCheck: false,
-      message: '',
-    };
+    const PG = new PokerGame(gameId);
 
     axios.post(`/api/gamestate/${gameId}`, PG)
       .then(() => {
@@ -324,7 +287,8 @@ class App extends React.Component {
       });
   }
 
-  // --- HELPER FUNCTIONs ---
+
+  // --- HELPER FUNCTIONS ---
 
   convertData(PG) {
     // iterate through all players

@@ -13,7 +13,7 @@ const gameStateSchema = new mongoose.Schema({
   turn: Number,
   pot: Number,
   actionRoundState: Number,
-  board: Array,
+  board: Object,
   deckArray: Array,
   deckColor: String,
   minRaise: Number,

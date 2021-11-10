@@ -4,7 +4,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import PlayerActions from './PlayerActions';
-import GF from '../../gameLogic/helperFunctions';
+import GF from '../../gameLogic/functions';
+import { stringifyCard } from '../../gameLogic/functions';
 
 const Container = styled.div`
   width: 144px;
@@ -52,10 +53,10 @@ const Player = (props) => {
     cardView = (
       <CardBox>
         <CardContainer>
-          <img alt="" className="card" src={`lib/cards/${GF.beautifyCard(player.cards[0])}.svg`} />
+          <img alt="" className="card" src={`lib/cards/${stringifyCard(player.cards[0])}.svg`} />
         </CardContainer>
         <CardContainer>
-          <img alt="" className="card" src={`lib/cards/${GF.beautifyCard(player.cards[1])}.svg`} />
+          <img alt="" className="card" src={`lib/cards/${stringifyCard(player.cards[1])}.svg`} />
         </CardContainer>
       </CardBox>
     );

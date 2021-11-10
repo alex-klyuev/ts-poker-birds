@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import GF from '../../gameLogic/helperFunctions';
+import { stringifyCard } from '../../gameLogic/functions';
 
 const Deck = styled.div`
   height: 100px;
@@ -25,6 +25,8 @@ const CardContainer = styled.div`
 
 const Board = (props) => {
   const { PG } = props;
+  const { board } = PG;
+
   return (
     <div>
       <Deck>
@@ -33,17 +35,15 @@ const Board = (props) => {
         </CardContainer>
       </Deck>
       <BoardContainer>
-        {PG.board.map((card) => {
-          if (card === '') {
-            return null;
-          }
-          return (
-            <CardContainer key={card}>
-              <img alt="" className="card" src={`lib/cards/${GF.beautifyCard(card)}.svg`} />
-            </CardContainer>
-          );
-        })}
-      </BoardContainer>
+          {board.cards.map((card) => {
+            const cardString = stringifyCard(card);
+            return (
+              <CardContainer key={cardString}>
+                <img alt="" className="card" src={`lib/cards/${cardString}.svg`} />
+              </CardContainer>
+            );
+          })}
+        </BoardContainer>
     </div>
   );
 };

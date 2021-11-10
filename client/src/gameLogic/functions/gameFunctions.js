@@ -1,15 +1,16 @@
-/* eslint-disable no-param-reassign */
+import { buildDeck, dealCards } from './cards';
+
 const showdown = (PG) => {
   const showdownHandRanks = [];
   for (let i = 0; i < PG.playerObjectArray.length; i++) {
     // for the players that remain, add a new object property consisting of that player's seven showdown cards
     if (PG.playerObjectArray[i].inGame) {
-      const sevenCards = [...PG.board, ...PG.playerObjectArray[i].cards];
+      const sevenCards = [...PG.board.cards, ...PG.playerObjectArray[i].cards];
 
       // this function takes the player's seven showdown cards, and returns
       // the rank of the best five-hand card
       PG.playerObjectArray[i].showdownRank = bestHandRank(sevenCards);
-      PG.playerObjectArray[i].showdownRank.playerIndex = i; // just for you AK ;)
+      PG.playerObjectArray[i].showdownRank.playerIndex = i;
       showdownHandRanks.push(PG.playerObjectArray[i].showdownRank);
     }
   }
@@ -335,29 +336,36 @@ const makeFreqMap = (hand) => {
   return freqMap;
 };
 
-// the "build deck" function simply creates a new full deck
-const buildDeck = (PG) => {
-  PG.deckArray = [];
-  for (let i = 0; i < 13; i++) {
-    const spadesCard = [i + 2, 'S'];
-    const clubsCard = [i + 2, 'C'];
-    const diamondCard = [i + 2, 'D'];
-    const heartCard = [i + 2, 'H'];
-    PG.deckArray.push(spadesCard, clubsCard, diamondCard, heartCard);
-  }
-};
 
-// this function assigns cards from the deck to players. Remaining deck is returned and player objects are
-// updated accordingly. Only needs to run once at the beginning of each dealer round
-const dealCards = (PG) => {
-  for (let i = 0; i < PG.playerObjectArray.length; i++) {
-    for (let j = 0; j < 2; j++) {
-      const randInt = randDeckArrayIdx(PG);
-      PG.playerObjectArray[i].cards[j] = PG.deckArray[randInt];
-      PG.deckArray.splice(randInt, 1);
-    }
-  }
-};
+
+
+
+
+
+
+// // the "build deck" function simply creates a new full deck
+// const buildDeck = (PG) => {
+//   PG.deckArray = [];
+//   for (let i = 0; i < 13; i++) {
+//     const spadesCard = [i + 2, 'S'];
+//     const clubsCard = [i + 2, 'C'];
+//     const diamondCard = [i + 2, 'D'];
+//     const heartCard = [i + 2, 'H'];
+//     PG.deckArray.push(spadesCard, clubsCard, diamondCard, heartCard);
+//   }
+// };
+
+// // this function assigns cards from the deck to players. Remaining deck is returned and player objects are
+// // updated accordingly. Only needs to run once at the beginning of each dealer round
+// const dealCards = (PG) => {
+//   for (let i = 0; i < PG.playerObjectArray.length; i++) {
+//     for (let j = 0; j < 2; j++) {
+//       const randInt = randDeckArrayIdx(PG);
+//       PG.playerObjectArray[i].cards[j] = PG.deckArray[randInt];
+//       PG.deckArray.splice(randInt, 1);
+//     }
+//   }
+// };
 
 // increments turn so that it can loop around the table
 const incrementTurn = (PG) => {
@@ -408,8 +416,8 @@ const randDeckArrayIdx = (PG) => Math.floor(Math.random() * PG.deckArray.length)
 const addToBoard = (PG) => {
   const randInt = randDeckArrayIdx(PG);
   for (let i = 0; i < 5; i += 1) {
-    if (PG.board[i] === '') {
-      PG.board[i] = PG.deckArray[randInt];
+    if (PG.board.cards[i] === undefined) {
+      PG.board.cards[i] = PG.deckArray[randInt];
       PG.deckArray.splice(randInt, 1);
       return;
     }
@@ -423,21 +431,25 @@ const flop = (PG) => {
 };
 
 // takes in the card array of 2, and returns 1 string
-const beautifyCard = (card) => {
-  const num = card[0].toString();
-  switch (num) {
-    case '11':
-      return `J${card[1]}`;
-    case '12':
-      return `Q${card[1]}`;
-    case '13':
-      return `K${card[1]}`;
-    case '14':
-      return `A${card[1]}`;
-    default:
-      return num + card[1];
-  }
-};
+// const beautifyCard = (card) => {
+//   const num = card[0].toString();
+//   switch (num) {
+//     case '11':
+//       return `J${card[1]}`;
+//     case '12':
+//       return `Q${card[1]}`;
+//     case '13':
+//       return `K${card[1]}`;
+//     case '14':
+//       return `A${card[1]}`;
+//     default:
+//       return num + card[1];
+//   }
+// };
+
+/*
+
+NODE GAME FUNCTIONS
 
 // this function logs the current game condition so that everyone can see it.
 // this includes the player id's, stacks, and cards to indicate if they're in the game or not.
@@ -518,6 +530,8 @@ const outputPlayerInquiry = (PG) => {
   console.log(`Your cards: | ${beautifyCard(PG.playerObjectArray[PG.turn].cards[0])} | ${beautifyCard(PG.playerObjectArray[PG.turn].cards[1])} |`);
   console.log(`Min bet: $${convertToDollars(PG.previousBet + PG.minRaise)} \n`);
 };
+
+*/
 
 // just to make it easier to keep track where I'm doing this
 const convertToDollars = (value) => {
@@ -669,7 +683,7 @@ const refreshDealerRound = (PG) => {
   PG.dealer %= PG.playerObjectArray.length;
 
   // clear the board, build a new full deck, and deal cards to the players
-  PG.board = ['', '', '', '', ''];
+  PG.board.cards = [];
   buildDeck(PG);
   dealCards(PG);
 
@@ -692,16 +706,13 @@ const refreshDealerRound = (PG) => {
 
 export default {
   showdown,
-  buildDeck,
-  dealCards,
   incrementTurn,
-  postBlinds,
   addToBoard,
   flop,
-  beautifyCard,
-  randDeckArrayIdx,
-  outputGameStatus,
-  outputPlayerInquiry,
+  // beautifyCard,
+  postBlinds,
+  // outputGameStatus,
+  // outputPlayerInquiry,
   convertToDollars,
   convertToCents,
   handlePlayerAction,

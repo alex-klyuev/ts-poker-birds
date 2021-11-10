@@ -1,9 +1,22 @@
-/* eslint-disable no-param-reassign */
-class Player {
-  constructor(ID) {
+// The Player class holds all the data associated with a unique player
+// It also holds the player methods that will alter the overall game state
+
+import { PokerGame } from './PokerGame';
+import { Card } from '../types';
+
+export class Player {
+  ID: number;
+  stack: number;
+  cards: Array<Card>;
+  actionState: string;
+  potCommitment: number;
+  inGame: boolean;
+  showdownRank: Array<number>;
+
+  constructor(ID: number) {
     this.ID = ID;
     this.stack = 0;
-    this.cards = [[], []];
+    this.cards = [];
     this.actionState = '';
     this.potCommitment = 0;
     this.inGame = true;
@@ -12,7 +25,8 @@ class Player {
 
   // the raise function is the only one of the four actions that depends
   // on a numerical input from the user, hence it is the only one that takes an argument
-  raise(bet, PG) {
+  // other than PG
+  raise(bet: number, PG: PokerGame): void {
     // since user inputs total bet, the raise amount is
     // the difference between the bet and player's pot commitment
     const raiseAmount = bet - this.potCommitment;
@@ -46,7 +60,7 @@ class Player {
     PG.allowCheck = false;
   }
 
-  call(PG) {
+  call(PG: PokerGame): void {
     this.actionState = 'call';
 
     // the amount that a call moves from stack to pot is equal to the previous bet
@@ -64,17 +78,15 @@ class Player {
     this.potCommitment += callAmount;
   }
 
-  check() {
+  check(): void {
     this.actionState = 'check';
   }
 
   // need code to take player out of the game in a fold.
-  fold() {
+  fold(): void {
     this.actionState = 'fold';
     this.inGame = false;
     // set this equal to 0 so it doesn't display on the game output
     this.potCommitment = 0;
   }
 }
-
-export default Player;

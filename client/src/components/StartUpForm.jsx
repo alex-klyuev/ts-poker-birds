@@ -5,7 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import GF from '../gameLogic/helperFunctions';
+import GF from '../gameLogic/functions';
 
 const Input = styled.span`
   color: blue;
