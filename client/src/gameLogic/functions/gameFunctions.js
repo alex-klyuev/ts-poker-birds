@@ -1,4 +1,5 @@
 import { buildDeck, dealCards } from './cards';
+import { convertToCents, convertToDollars } from './conversions';
 
 // increments turn so that it can loop around the table
 const incrementTurn = (PG) => {
@@ -40,16 +41,6 @@ const postBlinds = (PG) => {
   PG.minRaise = PG.bigBlind;
   PG.previousBet = PG.bigBlind;
   PG.allowCheck = false;
-};
-
-// just to make it easier to keep track where I'm doing this
-const convertToDollars = (value) => {
-  value /= 100;
-  return value;
-};
-const convertToCents = (value) => {
-  value *= 100;
-  return value;
 };
 
 // Action round ending conditions fall into two categories:
@@ -197,8 +188,6 @@ const refreshDealerRound = (PG) => {
 export default {
   incrementTurn,
   postBlinds,
-  convertToDollars,
-  convertToCents,
   checkActionRoundEndingCondition,
   checkDealerRoundEndingCondition,
   refreshActionRound,

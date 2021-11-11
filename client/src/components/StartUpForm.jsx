@@ -5,7 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import GF from '../gameLogic/functions';
+import { convertToCents, convertToDollars } from '../gameLogic/functions';
 
 const Input = styled.span`
   color: blue;
@@ -63,7 +63,7 @@ class StartUpForm extends React.Component {
       alert('Please enter a buy-in first');
       return false;
     }
-    const smallBlind = GF.convertToCents(Number(input));
+    const smallBlind = convertToCents(Number(input));
     if (Number.isNaN(smallBlind) || !Number.isInteger(smallBlind) || smallBlind < 1 || smallBlind > buyIn / 20) {
       alert('Please enter a valid input\n(make sure your blind is at max 1/20th of the buy-in)');
       return false;
@@ -77,7 +77,7 @@ class StartUpForm extends React.Component {
       alert('Please enter a buy-in first');
       return false;
     }
-    const bigBlind = GF.convertToCents(Number(input));
+    const bigBlind = convertToCents(Number(input));
     if (Number.isNaN(bigBlind) || !Number.isInteger(bigBlind) || bigBlind < 1 || bigBlind > buyIn / 20) {
       alert('Please enter a valid input\n(make sure your blind is at max 1/20th of the buy-in)');
       return false;
@@ -119,9 +119,9 @@ class StartUpForm extends React.Component {
     } = this.props;
     const inputs = {
       numPlayers,
-      buyIn: GF.convertToDollars(buyIn),
-      smallBlind: GF.convertToDollars(smallBlind),
-      bigBlind: GF.convertToDollars(bigBlind),
+      buyIn: convertToDollars(buyIn),
+      smallBlind: convertToDollars(smallBlind),
+      bigBlind: convertToDollars(bigBlind),
     };
 
     // show nothing if field is not initialized yet; otherwise show their choice

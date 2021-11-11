@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import GF from '../../gameLogic/functions';
+import { convertToDollars } from '../../gameLogic/functions';
 
 const OuterContainer = styled.div`
   margin-top: 30px;
@@ -28,7 +28,7 @@ const Pot = (props) => {
   return (
     <OuterContainer>
       <div>
-        <PotContainer>{`$${GF.convertToDollars(pot)}`}</PotContainer>
+        <PotContainer>{`$${convertToDollars(pot)}`}</PotContainer>
         <Text>Pot</Text>
       </div>
     </OuterContainer>

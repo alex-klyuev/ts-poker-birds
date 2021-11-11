@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import PlayerActions from './PlayerActions';
-import GF from '../../gameLogic/functions';
+import { convertToDollars } from '../../gameLogic/functions';
 import { stringifyCard } from '../../gameLogic/functions';
 
 const Container = styled.div`
@@ -66,7 +66,7 @@ const Player = (props) => {
     minBetView = (
       <Text>
         Min bet: $
-        {GF.convertToDollars(PG.previousBet + PG.minRaise)}
+        {convertToDollars(PG.previousBet + PG.minRaise)}
       </Text>
     );
 
@@ -93,7 +93,7 @@ const Player = (props) => {
   const potCommitmentView = (player.potCommitment === 0) ? <Text /> : (
     <Text>
       $
-      {GF.convertToDollars(player.potCommitment)}
+      {convertToDollars(player.potCommitment)}
     </Text>
   );
 
@@ -106,7 +106,7 @@ const Player = (props) => {
       </Text>
       <Text>
         $
-        {GF.convertToDollars(player.stack)}
+        {convertToDollars(player.stack)}
       </Text>
       {cardView}
       <Text>

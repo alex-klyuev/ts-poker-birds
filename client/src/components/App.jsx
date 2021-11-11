@@ -9,7 +9,14 @@ import axios from 'axios';
 // classes & functions
 import  { PokerGame, Player, Board } from '../gameLogic/classes';
 import GF from '../gameLogic/functions';
-import { addToBoard, flop, showdown, rankToHandStr } from '../gameLogic/functions';
+import {
+  addToBoard,
+  flop,
+  showdown,
+  rankToHandStr,
+  convertToCents,
+  convertToDollars
+} from '../gameLogic/functions';
 // components
 import StartUpForm from './StartUpForm';
 import PlayerContainer from './PlayerContainer';
@@ -219,7 +226,7 @@ class App extends React.Component {
   // (e.g. $20 is saved as 2000)
   // this allows players to play with cents without having to deal with decimals in the code
   registerBuyIn(buyIn) {
-    buyIn = GF.convertToCents(Number(buyIn));
+    buyIn = convertToCents(Number(buyIn));
 
     // assign the buy in to each player
     const { playerObjectArray } = this.state;
@@ -235,13 +242,13 @@ class App extends React.Component {
 
   registerSmallBlind(smallBlind) {
     this.setState({
-      smallBlind: GF.convertToCents(Number(smallBlind)),
+      smallBlind: convertToCents(Number(smallBlind)),
     });
   }
 
   registerBigBlind(bigBlind) {
     this.setState({
-      bigBlind: GF.convertToCents(Number(bigBlind)),
+      bigBlind: convertToCents(Number(bigBlind)),
     });
   }
 
