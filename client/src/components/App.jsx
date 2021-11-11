@@ -1,6 +1,5 @@
 // --- ACRONYMS ---
 // PG = poker game -> replacement for the state for use within functions
-// GF = game functions
 
 // libs
 import React from 'react';
@@ -8,7 +7,6 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 // classes & functions
 import  { PokerGame, Player, Board } from '../gameLogic/classes';
-import GF from '../gameLogic/functions';
 import {
   addToBoard,
   flop,
@@ -18,6 +16,12 @@ import {
   incrementTurn,
   findNextPlayer
 } from '../gameLogic/functions';
+import {
+  checkActionRoundEndingCondition,
+  refreshActionRound,
+  checkDealerRoundEndingCondition,
+  refreshDealerRound
+} from '../gameLogic/gameFlow';
 // components
 import StartUpForm from './StartUpForm';
 import PlayerContainer from './PlayerContainer';
@@ -142,46 +146,46 @@ class App extends React.Component {
 
       // check if dealer round is done. comes before action round
       // because of edge case where one player checks and all others fold.
-      if (GF.checkDealerRoundEndingCondition(PG)) {
+      if (checkDealerRoundEndingCondition(PG)) {
         // will set everything through the blinds up for next round
-        GF.refreshDealerRound(PG);
+        refreshDealerRound(PG);
         PG.actionRoundState = 0;
       }
 
       // check if action round is done
-      if (GF.checkActionRoundEndingCondition(PG)) {
+      if (checkActionRoundEndingCondition(PG)) {
         // if so, add 3 cards to the board
         flop(PG);
         // remaining code that is the same between each action round
-        GF.refreshActionRound(PG);
+        refreshActionRound(PG);
         PG.actionRoundState += 1;
       }
     }
 
     // handle the flop and turn (same functionality for each)
     if (PG.actionRoundState === 1 || PG.actionRoundState === 2) {
-      if (GF.checkDealerRoundEndingCondition(PG)) {
-        GF.refreshDealerRound(PG);
+      if (checkDealerRoundEndingCondition(PG)) {
+        refreshDealerRound(PG);
         PG.actionRoundState = 0;
       }
 
-      if (GF.checkActionRoundEndingCondition(PG)) {
+      if (checkActionRoundEndingCondition(PG)) {
         addToBoard(PG); // turn & river
-        GF.refreshActionRound(PG);
+        refreshActionRound(PG);
         PG.actionRoundState += 1;
       }
     }
 
     // handle the river
     if (PG.actionRoundState === 3) {
-      if (GF.checkDealerRoundEndingCondition(PG)) {
-        GF.refreshDealerRound(PG);
+      if (checkDealerRoundEndingCondition(PG)) {
+        refreshDealerRound(PG);
         PG.actionRoundState = 0;
         return;
       }
 
       // the difference on the river is the opportunity for a showdown
-      if (GF.checkActionRoundEndingCondition(PG)) {
+      if (checkActionRoundEndingCondition(PG)) {
         // set the winning hand rank and its player index
         const winHandRank = showdown(PG);
 
@@ -194,7 +198,7 @@ class App extends React.Component {
         PG.message += ` won with a ${rankToHandStr(winHandRank[0])}`;
 
         // reset the dealer round
-        GF.refreshDealerRound(PG);
+        refreshDealerRound(PG);
         PG.actionRoundState = 0;
       }
     }
@@ -267,7 +271,7 @@ class App extends React.Component {
     PG.deckColor = Math.floor(Math.random() * 2) ? 'Blue' : 'Red';
 
     // start the dealer round
-    GF.refreshDealerRound(PG);
+    refreshDealerRound(PG);
 
     // update the state in the database and do the same
     // in the app upon successful write
