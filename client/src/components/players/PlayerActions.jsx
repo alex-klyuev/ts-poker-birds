@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import GF from '../../gameLogic/functions';
+import { convertToCents } from '../../gameLogic/functions';
 
 const Container = styled.div`
   width: 144px;
@@ -101,7 +101,7 @@ class PlayerActions extends React.Component {
     // second input: verify that the raise is an increment of the small blind,
     // equal or above the minimum raise, and less than or equal to the player's stack.
     // exception is made if player bets stack; then bet gets through regardless of the min raise.
-    numericInput = GF.convertToCents(parseFloat(numericInput));
+    numericInput = convertToCents(parseFloat(numericInput));
     if (numericInput === PG.playerObjectArray[PG.turn].stack) {
       return {
         valid: true,

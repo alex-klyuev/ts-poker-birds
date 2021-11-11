@@ -15,7 +15,8 @@ import {
   showdown,
   rankToHandStr,
   convertToCents,
-  convertToDollars
+  incrementTurn,
+  findNextPlayer
 } from '../gameLogic/functions';
 // components
 import StartUpForm from './StartUpForm';
@@ -89,9 +90,9 @@ class App extends React.Component {
         break;
     }
 
-    GF.incrementTurn(PG);
+    incrementTurn(PG);
     // function to find the next player that is still in the game
-    GF.findNextPlayer(PG);
+    findNextPlayer(PG);
 
     // in the spirit of modularity, this function will pass the modified PG on to the next handler,
     // which will in turn update the state

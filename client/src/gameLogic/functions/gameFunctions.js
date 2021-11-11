@@ -1,47 +1,6 @@
 import { buildDeck, dealCards } from './cards';
-import { convertToCents, convertToDollars } from './conversions';
-
-// increments turn so that it can loop around the table
-const incrementTurn = (PG) => {
-  PG.turn += 1;
-  PG.turn %= PG.playerObjectArray.length;
-
-  // TO-DO: fix the message box
-  // eslint-disable-next-line max-len
-  // PG.message = `Player ${PG.playerObjectArray[PG.dealer].ID} is the dealer\nPlayer ${PG.playerObjectArray[PG.turn].ID}, it's your turn`;
-};
-
-// this function finds the next player that's still in the game and increments the turn to them
-const findNextPlayer = (PG) => {
-  // iterates starting from the current turn until it finds the next player that hasn't folded,
-  // then breaks the loop
-  for (let i = 0; i < PG.playerObjectArray.length; i += 1) {
-    if (!PG.playerObjectArray[PG.turn].inGame) {
-      incrementTurn(PG);
-    } else {
-      break;
-    }
-  }
-};
-
-const postBlinds = (PG) => {
-  // post small blind
-  PG.minRaise = 0;
-  PG.previousBet = 0;
-  PG.playerObjectArray[PG.turn].raise(PG.smallBlind, PG);
-  PG.playerObjectArray[PG.turn].actionState = 'SB';
-  incrementTurn(PG);
-
-  // post big blind; vars are set to 0 to allow a raise (so that later bb can check at the end of pre-flop)
-  PG.minRaise = 0;
-  PG.previousBet = 0;
-  PG.playerObjectArray[PG.turn].raise(PG.bigBlind, PG);
-  PG.playerObjectArray[PG.turn].actionState = 'BB';
-  incrementTurn(PG);
-  PG.minRaise = PG.bigBlind;
-  PG.previousBet = PG.bigBlind;
-  PG.allowCheck = false;
-};
+import { convertToDollars } from './conversions';
+import { incrementTurn, findNextPlayer, postBlinds } from './gameFlow';
 
 // Action round ending conditions fall into two categories:
 //  1. "No-raise": where there has been no raise and everyone checks or folds,
@@ -186,11 +145,8 @@ const refreshDealerRound = (PG) => {
 };
 
 export default {
-  incrementTurn,
-  postBlinds,
   checkActionRoundEndingCondition,
   checkDealerRoundEndingCondition,
   refreshActionRound,
   refreshDealerRound,
-  findNextPlayer,
 };
