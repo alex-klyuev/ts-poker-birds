@@ -19,29 +19,6 @@ export const showdown = (PG: PokerGame): void => {
   return pickBestHand(showdownHandRanks);
 };
 
-export const rankToHandStr = (rank) => {
-  switch (rank) {
-    case 8:
-      return 'Straight Flush';
-    case 7:
-      return 'Four of a Kind';
-    case 6:
-      return 'Full House';
-    case 5:
-      return 'Flush';
-    case 4:
-      return 'Straight';
-    case 3:
-      return 'Three of a Kind';
-    case 2:
-      return 'Two Pair';
-    case 1:
-      return 'Pair';
-    default:
-      return 'High Card';
-  }
-};
-
 const bestHandRank = (sevenCards) => {
   const currentCombination = [];
   currentCombination.length = 5;

@@ -1,4 +1,4 @@
-import { HandToRankMap } from '../../../types';
+import { Hand, Rank } from '../../../types';
 import {
   highCard,
   pair,
@@ -51,19 +51,23 @@ const handFunctionsArray = [straightFlush, fourOfAKind, fullHouse, flush, straig
   threeOfAKind, twoPair, pair, highCard];
 
 // This function will return the rank of any 5-card hand combination
-export const mapHandToRank: HandToRankMap = (hand) => {
+// We don't use HandToRankMap as a type here because we know it won't
+// return null
+export const mapHandToRank = (hand: Hand): Rank => {
   // sort hand by number rank from greatest to lowest
   // giving the helper functions a sorted hand simplifies them
   hand.sort((card1, card2) => card2.num - card1.num);
 
   // iterate through the handFunctionsArray and return the hand rank found
   for (let i = 0; i < handFunctionsArray.length; i += 1) {
-    const handRank = handFunctionsArray[i](hand);
+    const handRank = handFunctionsArray[i](hand) as Rank;
     if (handRank !== null) {
       return handRank;
     }
   }
 
   // to make TS happy, will never hit this
-  return null;
+  // what's the proper method for designating the return type on a function
+  // like this where you know it will never return undefined?
+  return {} as Rank;
 };
