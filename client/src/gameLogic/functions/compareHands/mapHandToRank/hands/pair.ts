@@ -1,19 +1,18 @@
-import { HandToRankMap } from '../../../../types';
+import { HandToRankMap, FreqMap } from '../../../../types';
 import { makeFreqMap } from './helper';
 
 // Ranking system:
-// [1, pair-value, high-card, ... , 3rd-highest-card, 0]
+// [1, pair-value, high-kicker, ... , 3rd-highest-kicker, 0]
 
 type KickerArray = [number, number, number];
 
 interface RankObj {
   pairVal?: number;
-  // hacky way to allow initializing it as an empty array
   kickerArray?: number[];
 }
 
 export const pair: HandToRankMap = (hand) => {
-  const freqMap = makeFreqMap(hand);
+  const freqMap: FreqMap = makeFreqMap(hand);
 
   // make a specific object for value of the pair
   const rankObj: RankObj = {};

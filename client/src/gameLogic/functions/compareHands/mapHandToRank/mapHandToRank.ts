@@ -1,3 +1,16 @@
+import { HandToRankMap } from '../../../types';
+import {
+  highCard,
+  pair,
+  twoPair,
+  threeOfAKind,
+  straight,
+  flush,
+  fullHouse,
+  fourOfAKind,
+  straightFlush
+} from './hands';
+
 /**
  * In poker, 6 numbers are required to identify the rank of any combination of 5 cards
  * This allows hands to be compared to determine which is the highest
@@ -31,4 +44,26 @@
  * We iterate left to right until one has a higher rank, or a tie is found.
 */
 
-export type Rank = [number, number, number, number, number, number];
+// create an array of all the hand functions to iterate through in returnHandRank
+// will break out of the function once a class of hand is found, so we iterate
+// from high to low rank
+const handFunctionsArray = [straightFlush, fourOfAKind, fullHouse, flush, straight,
+  threeOfAKind, twoPair, pair, highCard];
+
+// This function will return the rank of any 5-card hand combination
+export const mapHandToRank: HandToRankMap = (hand) => {
+  // sort hand by number rank from greatest to lowest
+  // giving the helper functions a sorted hand simplifies them
+  hand.sort((card1, card2) => card2.num - card1.num);
+
+  // iterate through the handFunctionsArray and return the hand rank found
+  for (let i = 0; i < handFunctionsArray.length; i += 1) {
+    const handRank = handFunctionsArray[i](hand);
+    if (handRank !== null) {
+      return handRank;
+    }
+  }
+
+  // to make TS happy, will never hit this
+  return null;
+};

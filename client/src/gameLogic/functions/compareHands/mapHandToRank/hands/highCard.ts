@@ -1,7 +1,10 @@
-import { HandToRankMap, Rank} from '../../../../types';
+import { HandToRankMap } from '../../../../types';
 
 // Ranking system:
 // [0, high-card, 2nd-highest card, ... , 5th-highest card]
+
+type HighCardArray = [number, number, number, number, number];
+
 export const highCard: HandToRankMap = (hand) => {
   const highCardArray = [];
   for (let i = 0; i < 5; i++) {
@@ -9,5 +12,5 @@ export const highCard: HandToRankMap = (hand) => {
     // so we simply add the first 5
     highCardArray.push(hand[i].num);
   }
-  return [0, ...highCardArray] as Rank;
+  return [0, ...highCardArray as HighCardArray];
 };
