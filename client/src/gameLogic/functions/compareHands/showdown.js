@@ -1,6 +1,6 @@
 import { PokerGame } from '../../classes';
 
-export const showdown = (PG: PokerGame) => {
+export const showdown = (PG: PokerGame): void => {
   const showdownHandRanks = [];
   for (let i = 0; i < PG.playerObjectArray.length; i++) {
     // for the players that remain, add a new object property consisting of that player's seven showdown cards
@@ -44,7 +44,7 @@ export const rankToHandStr = (rank) => {
 
 const bestHandRank = (sevenCards) => {
   const currentCombination = [];
-  currentCombination.length = 5; // just for you AK :)
+  currentCombination.length = 5;
   const handCombinations = [];
 
   // this function makes n choose k combinations of an input array of length n
@@ -112,6 +112,7 @@ const returnHandRank = (hand) => {
   for (let i = 0; i < handFunctionsArray.length; i += 1) {
     const handRank = handFunctionsArray[i](hand);
     if (handRank !== null) {
+      console.log(handRank);
       return handRank;
     }
   }
