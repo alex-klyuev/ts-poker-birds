@@ -1,6 +1,6 @@
 import { PokerGame } from '../../classes';
 
-export const showdown = (PG: PokerGame): void => {
+export const showdown = (PG: PokerGame) => {
   const showdownHandRanks = [];
   for (let i = 0; i < PG.playerObjectArray.length; i++) {
     // for the players that remain, add a new object property consisting of that player's seven showdown cards

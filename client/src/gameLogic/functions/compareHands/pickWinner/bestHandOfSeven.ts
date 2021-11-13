@@ -1,4 +1,4 @@
-import { Card, Hand, Rank } from '../../../types';
+import { Card, Hand, PlayerRank } from '../../../types';
 import { mapHandToRank } from '../mapHandToRank';
 import { pickBestHandRank } from './pickBestHandRank';
 
@@ -29,15 +29,17 @@ const combine = (inputArray: Array<Card>, k: number, start: number): Array<Hand>
   return handCombinations;
 };
 
-export const bestHandRank = (sevenCards: Array<Card>): Rank => {
+export const bestHandOfSeven = (sevenCards: Array<Card>): PlayerRank => {
   // generate 21 combinations of 5-card hands from the 7 input cards
   const handCombinations: Array<Hand> = combine(sevenCards, 5, 0);
 
   // iterate through each hand combination to return its rank, then push the
   // handRank array to handRanks
-  const handRanks: Array<Rank> = [];
+  const handRanks: Array<PlayerRank> = [];
   for (let i = 0; i < handCombinations.length; i += 1) {
-    const handRank: Rank = mapHandToRank(handCombinations[i]);
+    const handRank: PlayerRank = {
+      rank: mapHandToRank(handCombinations[i])
+    };
     handRanks.push(handRank);
   }
 
