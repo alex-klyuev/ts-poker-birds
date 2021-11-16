@@ -1,4 +1,4 @@
-import { PlayerRank } from '../../../types';
+import { PlayerRank } from '../../../../types';
 
 // given an arbitrary-length array of 5-card hand ranks,
 // returns the rank of the best hand
@@ -11,6 +11,7 @@ export const pickBestHandRank = (handRanks: Array<PlayerRank>): PlayerRank => {
   // sort the hand ranks and return the best one
   handRanks.sort((playerRank1, playerRank2) => {
     const { rank: rank1 } = playerRank1;
+    console.log(playerRank1);
     const { rank: rank2 } = playerRank2;
 
     for (let i = 0; i < rank1.length; i++) {

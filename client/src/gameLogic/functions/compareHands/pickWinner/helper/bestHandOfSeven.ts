@@ -1,5 +1,5 @@
-import { Card, Hand, PlayerRank } from '../../../types';
-import { mapHandToRank } from '../mapHandToRank';
+import { Card, Hand, PlayerRank } from '../../../../types';
+import { mapHandToRank } from '../../mapHandToRank';
 import { pickBestHandRank } from './pickBestHandRank';
 
 // In poker, you pick the best 5 hand combination that you can make out of 7 cards:
@@ -10,11 +10,14 @@ import { pickBestHandRank } from './pickBestHandRank';
 // combine helper function makes n choose k combinations of an input array of length n
 // and generates arrays of length k that constitute all combinations of the input
 // array elements and returns an array of all those arrays. It's n choose k
-const combine = (inputArray: Array<Card>, k: number, start: number): Array<Hand> => {
-  const currentCombination: Array<Card> = [];
-  const pl = k;
-  currentCombination.length = pl;
-  const handCombinations: Array<Hand> = [];
+const combine = (
+  inputArray: Array<Card>,
+  k: number,
+  start: number = 0,
+  currentCombination: Array<Card> = [],
+  handCombinations: Array<Hand> = []
+): Array<Hand> => {
+  currentCombination.length = 5;
 
   if (k === 0) {
     handCombinations.push(currentCombination.slice() as Hand);
@@ -22,8 +25,8 @@ const combine = (inputArray: Array<Card>, k: number, start: number): Array<Hand>
   }
 
   for (let i = start; i <= inputArray.length - k; i++) {
-    currentCombination[pl - k] = inputArray[i];
-    combine(inputArray, k - 1, i + 1);
+    currentCombination[5 - k] = inputArray[i];
+    combine(inputArray, k - 1, i + 1, currentCombination, handCombinations);
   }
 
   return handCombinations;
@@ -31,7 +34,7 @@ const combine = (inputArray: Array<Card>, k: number, start: number): Array<Hand>
 
 export const bestHandOfSeven = (sevenCards: Array<Card>): PlayerRank => {
   // generate 21 combinations of 5-card hands from the 7 input cards
-  const handCombinations: Array<Hand> = combine(sevenCards, 5, 0);
+  const handCombinations: Array<Hand> = combine(sevenCards, 5);
 
   // iterate through each hand combination to return its rank, then push the
   // handRank array to handRanks

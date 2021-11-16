@@ -10,11 +10,11 @@ import  { PokerGame, Player, Board } from '../gameLogic/classes';
 import {
   addToBoard,
   flop,
-  showdown,
   rankToHandStr,
   convertToCents,
   incrementTurn,
-  findNextPlayer
+  findNextPlayer,
+  pickWinner
 } from '../gameLogic/functions';
 import {
   checkActionRoundEndingCondition,
@@ -187,7 +187,7 @@ class App extends React.Component {
       // the difference on the river is the opportunity for a showdown
       if (checkActionRoundEndingCondition(PG)) {
         // set the winning hand rank and its player index
-        const winHandRank = showdown(PG);
+        const winHandRank = pickWinner(PG);
 
         // give the player the pot and reset it to 0
         PG.playerObjectArray[winHandRank.playerIndex].stack += PG.pot;
@@ -195,7 +195,7 @@ class App extends React.Component {
 
         // state the winner and how they won
         PG.message = `Player ${PG.playerObjectArray[winHandRank.playerIndex].ID}`;
-        PG.message += ` won with a ${rankToHandStr(winHandRank[0])}`;
+        PG.message += ` won with a ${rankToHandStr(winHandRank.rank[0])}`;
 
         // reset the dealer round
         refreshDealerRound(PG);

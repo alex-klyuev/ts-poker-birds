@@ -1,9 +1,8 @@
 import { PokerGame } from '../../../classes';
 import { Card, PlayerRank } from '../../../types';
-import { bestHandOfSeven } from './bestHandOfSeven';
-import { pickBestHandRank } from './pickBestHandRank';
+import { bestHandOfSeven, pickBestHandRank } from './helper';
 
-export const showdown = (PG: PokerGame): PlayerRank => {
+export const pickWinner = (PG: PokerGame): PlayerRank => {
   const showdownHandRanks: Array<PlayerRank> = [];
   for (let i = 0; i < PG.playerObjectArray.length; i++) {
     // for the players that remain, add a new object property consisting of that player's seven showdown cards
@@ -15,7 +14,7 @@ export const showdown = (PG: PokerGame): PlayerRank => {
       // PG.playerObjectArray[i].showdownRank = bestHandOfSeven(sevenCards);
       // PG.playerObjectArray[i].showdownRank.playerIndex = i;
 
-      const playerRank = {
+      const playerRank: PlayerRank = {
         rank: bestHandOfSeven(sevenCards).rank,
         playerIndex: i
       }
@@ -24,6 +23,8 @@ export const showdown = (PG: PokerGame): PlayerRank => {
       showdownHandRanks.push(playerRank)
     }
   }
+
+  // console.log(showdownHandRanks);
 
   // returns the best hand rank and its player index
   return pickBestHandRank(showdownHandRanks);

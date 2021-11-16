@@ -1,5 +1,5 @@
 import { PokerGame } from '../../classes';
-import { randDeckArrayIdx } from './randDeckArrayIdx';
+import { randDeckArrayIdx } from './helper';
 
 // takes a card out of the deck and adds it to the board next opening.
 // will need to be called 3 times for the flop, once for turn and once for river.
