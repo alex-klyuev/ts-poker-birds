@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { ReactElement } from 'react';
 import styled from 'styled-components';
 
 const Button = styled.button`
@@ -12,15 +11,15 @@ const Button = styled.button`
   border-radius: 15px;
 `;
 
-const EndGame = (props) => {
+interface Props {
+  endGame: () => void;
+}
+
+const EndGame = (props: Props): ReactElement => {
   const { endGame } = props;
   return (
     <Button type="button" onClick={endGame}>End Game</Button>
   );
-};
-
-EndGame.propTypes = {
-  endGame: PropTypes.func.isRequired,
 };
 
 export default EndGame;

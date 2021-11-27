@@ -1,5 +1,4 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { ReactElement } from 'react';
 import styled from 'styled-components';
 import { convertToDollars } from '../../gameLogic/functions';
 
@@ -23,7 +22,11 @@ const Text = styled.h4`
   text-align: center;
 `;
 
-const Pot = (props) => {
+interface Props {
+  pot: number;
+}
+
+const Pot = (props: Props): ReactElement => {
   const { pot } = props;
   return (
     <OuterContainer>
@@ -33,10 +36,6 @@ const Pot = (props) => {
       </div>
     </OuterContainer>
   );
-};
-
-Pot.propTypes = {
-  pot: PropTypes.number.isRequired,
 };
 
 export default Pot;

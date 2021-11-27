@@ -267,9 +267,6 @@ class App extends React.Component {
     PG.dealer = Math.floor(Math.random() * PG.playerObjectArray.length);
     PG.gameUnderway = true;
 
-    // pick a color for the game
-    PG.deckColor = Math.floor(Math.random() * 2) ? 'Blue' : 'Red';
-
     // start the dealer round
     refreshDealerRound(PG);
 

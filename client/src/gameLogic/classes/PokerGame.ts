@@ -5,15 +5,6 @@ import { Player } from './Player';
 import { Board } from './Board';
 import { Card } from '../types';
 
-
-class Test {
-  test: string;
-
-  constructor() {
-    this.test = 'test';
-  }
-}
-
 export class PokerGame {
   _id: number;
   gameUnderway: boolean;
@@ -32,7 +23,7 @@ export class PokerGame {
   previousBet: number;
   allowCheck: boolean;
   message: string;
-  test: Test;
+  deckColor: string;
 
   constructor(gameId: number) {
     // CONSTANT GLOBAL VARIABLES --- they'll remain the same for the entire game once initialized
@@ -57,6 +48,7 @@ export class PokerGame {
     this.previousBet = 0;
     this.allowCheck = false;
     this.message = '';
-    this.test = new Test();
+    // pick a color for the game
+    this.deckColor = Math.floor(Math.random() * 2) ? 'Blue' : 'Red';
   }
 }
