@@ -1,8 +1,13 @@
-/* eslint-disable no-alert */
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FormEvent } from 'react';
 import styled from 'styled-components';
 import { convertToCents } from '../../gameLogic/functions';
+import { PokerGame } from '../../gameLogic/classes';
+// convert PlayerActions enum to TPlayerActions to avoid declaration issue with PlayerACtions component
+import { PlayerActions as TPlayerActions, PlayerActionsWrapper } from '../../gameLogic/types';
+
+
+// START HERE: broke the game with player actions modifications
+
 
 const Container = styled.div`
   width: 144px;
@@ -26,8 +31,24 @@ const Input = styled.input`
   margin: 2px 10px;
 `;
 
-class PlayerActions extends React.Component {
-  constructor(props) {
+interface Props {
+  PG: PokerGame;
+  empty: boolean;
+  handlePlayerAction: (playerAction: PlayerActionsWrapper) => void;
+}
+
+interface State {
+  value: string;
+}
+
+interface PlayerActionsValidationWrapper {
+  valid: boolean;
+  playerAction?: PlayerActionsWrapper;
+}
+
+class PlayerActions extends React.Component<Props, State> {
+
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -37,25 +58,24 @@ class PlayerActions extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  handleInputChange(e) {
+  handleInputChange(e: FormEvent): void {
+    const target = e.target as HTMLInputElement;
     this.setState({
-      value: e.target.value,
+      value: target.value,
     });
   }
 
   // validate that player action is allowed, and return an object for use in App
   // to update the state
-  // eslint-disable-next-line class-methods-use-this
-  validatePlayerAction(input) {
+  validatePlayerAction(action: TPlayerActions): PlayerActionsValidationWrapper {
     const { PG } = this.props;
     const { value } = this.state;
-    const actionInput = input.slice(0, 4);
     let numericInput = value;
 
     // this multi-block if statement both validates the input
     // and returns call, check, or fold if it's one of those.
     // if it's a raise, it goes on to the next section to validate the amount
-    if (actionInput === 'call') {
+    if (action === TPlayerActions.Call) {
       // validate that there is a raise on the board to be called.
       // Second part is to allow the SB to call when it is not equal to the big blind
 
@@ -72,19 +92,22 @@ class PlayerActions extends React.Component {
       if (raiseCounter === 0 || PG.playerObjectArray[PG.turn].actionState === 'SB' && PG.smallBlind === PG.bigBlind) {
         alert('You cannot call here.');
 
-        // TO-DO: NOT SURE HOW THESE RETURNS WILL PLAY OUT
         return { valid: false };
       }
       return {
         valid: true,
-        playerAction: ['call', ''],
+        playerAction: {
+          actionType: TPlayerActions.Call
+        }
       };
-    } if (actionInput === 'fold') {
+    } if (action === TPlayerActions.Fold) {
       return {
         valid: true,
-        playerAction: ['fold', ''],
+        playerAction: {
+          actionType: TPlayerActions.Fold
+        }
       };
-    } if (actionInput === 'chec') {
+    } if (action === TPlayerActions.Check) {
       // validate that player is allowed to check
       if (PG.allowCheck === false) {
         alert('You cannot check here.');
@@ -92,32 +115,41 @@ class PlayerActions extends React.Component {
       }
       return {
         valid: true,
-        playerAction: ['check', ''],
+        playerAction: {
+          actionType: TPlayerActions.Fold
+        }
       };
-    } if (actionInput !== 'bet ') {
+    } if (action !== TPlayerActions.Raise) {
       return { valid: false };
     }
 
     // second input: verify that the raise is an increment of the small blind,
     // equal or above the minimum raise, and less than or equal to the player's stack.
     // exception is made if player bets stack; then bet gets through regardless of the min raise.
-    numericInput = convertToCents(parseFloat(numericInput));
-    if (numericInput === PG.playerObjectArray[PG.turn].stack) {
+    const raiseAmount = convertToCents(parseFloat(numericInput));
+    if (raiseAmount === PG.playerObjectArray[PG.turn].stack) {
       return {
         valid: true,
-        playerAction: ['raise', numericInput],
+        playerAction: {
+          actionType: TPlayerActions.Raise,
+          raiseAmount
+        }
       };
     }
-    if (numericInput % PG.smallBlind !== 0
-      || numericInput < PG.previousBet + PG.minRaise
-      || numericInput > PG.playerObjectArray[PG.turn].stack
+    if (raiseAmount % PG.smallBlind !== 0
+      || raiseAmount < PG.previousBet + PG.minRaise
+      || raiseAmount > PG.playerObjectArray[PG.turn].stack
       + PG.playerObjectArray[PG.turn].potCommitment) {
       alert('You can\'t raise that amount.');
+
       return { valid: false };
     }
     return {
       valid: true,
-      playerAction: ['raise', numericInput],
+      playerAction: {
+        actionType: TPlayerActions.Raise,
+        raiseAmount
+      }
     };
   }
 
@@ -134,11 +166,11 @@ class PlayerActions extends React.Component {
           <Button
             type="button"
             onClick={() => {
-              const inputAction = this.validatePlayerAction('fold');
+              const inputAction = this.validatePlayerAction(TPlayerActions.Fold);
               if (!inputAction.valid) {
                 return;
               }
-              handlePlayerAction(inputAction.playerAction);
+              handlePlayerAction(inputAction.playerAction as PlayerActionsWrapper);
             }}
           >
             Fold
@@ -146,11 +178,11 @@ class PlayerActions extends React.Component {
           <Button
             type="button"
             onClick={() => {
-              const inputAction = this.validatePlayerAction('check');
+              const inputAction = this.validatePlayerAction(TPlayerActions.Check);
               if (!inputAction.valid) {
                 return;
               }
-              handlePlayerAction(inputAction.playerAction);
+              handlePlayerAction(inputAction.playerAction as PlayerActionsWrapper);
             }}
           >
             Check
@@ -160,11 +192,11 @@ class PlayerActions extends React.Component {
           <Button
             type="button"
             onClick={() => {
-              const inputAction = this.validatePlayerAction('call');
+              const inputAction = this.validatePlayerAction(TPlayerActions.Call);
               if (!inputAction.valid) {
                 return;
               }
-              handlePlayerAction(inputAction.playerAction);
+              handlePlayerAction(inputAction.playerAction as PlayerActionsWrapper);
             }}
           >
             Call
@@ -172,11 +204,11 @@ class PlayerActions extends React.Component {
           <Button
             type="button"
             onClick={() => {
-              const inputAction = this.validatePlayerAction('bet ');
+              const inputAction = this.validatePlayerAction(TPlayerActions.Raise);
               if (!inputAction.valid) {
                 return;
               }
-              handlePlayerAction(inputAction.playerAction);
+              handlePlayerAction(inputAction.playerAction as PlayerActionsWrapper);
             }}
           >
             Bet
@@ -189,16 +221,5 @@ class PlayerActions extends React.Component {
     );
   }
 }
-
-PlayerActions.propTypes = {
-  empty: PropTypes.bool.isRequired,
-  PG: PropTypes.shape(/* fill me in */),
-  handlePlayerAction: PropTypes.func,
-};
-
-PlayerActions.defaultProps = {
-  PG: null,
-  handlePlayerAction: null,
-};
 
 export default PlayerActions;

@@ -1,11 +1,12 @@
 // TO-DO: refactor min bet to be part of the message box
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import { ReactElement } from 'react';
 import styled from 'styled-components';
 import PlayerActions from './PlayerActions';
-import { convertToDollars } from '../../gameLogic/functions';
-import { stringifyCard } from '../../gameLogic/functions';
+import { convertToDollars, stringifyCard } from '../../gameLogic/functions';
+// convert Player class to TPlayer type to avoid declaration issue with Player component
+import { Player as TPlayer, PokerGame } from '../../gameLogic/classes';
+import { PlayerActionsWrapper } from '../../gameLogic/types';
 
 const Container = styled.div`
   width: 144px;
@@ -29,7 +30,13 @@ const Text = styled.div`
   margin-left: 5px;
 `;
 
-const Player = (props) => {
+interface Props {
+  player: TPlayer;
+  PG: PokerGame;
+  handlePlayerAction: (action: PlayerActionsWrapper) => void;
+}
+
+const Player = (props: Props): ReactElement => {
   const {
     player,
     PG,
@@ -40,7 +47,15 @@ const Player = (props) => {
   // player is in but not their turn, or it's player's turn
   let cardView;
   let minBetView = <Text />;
-  let playerActionView = <PlayerActions empty />;
+  let playerActionView = (
+    <PlayerActions
+      empty={true}
+      PG={PG}
+      handlePlayerAction={handlePlayerAction}
+    />
+  );
+
+  // player is not in game
   if (!player.inGame) {
     cardView = (
       <CardBox>
@@ -48,8 +63,8 @@ const Player = (props) => {
         <CardContainer />
       </CardBox>
     );
-  } else if (player.ID === PG.turn + 1 && player.cards[0].length !== 0) {
-    // the && above is a janky way of handling game initialization
+  } else if (player.ID === PG.turn + 1 && player.cards.length !== 0) {
+    // player is in game and it's their turn (cards shown, actions available)
     cardView = (
       <CardBox>
         <CardContainer>
@@ -78,6 +93,7 @@ const Player = (props) => {
       />
     );
   } else {
+    // player is in game but it's not their turn (cards face down)
     cardView = (
       <CardBox>
         <CardContainer>
@@ -117,12 +133,6 @@ const Player = (props) => {
       {playerActionView}
     </Container>
   );
-};
-
-Player.propTypes = {
-  player: PropTypes.shape(/* fill me in */).isRequired,
-  PG: PropTypes.shape(/* fill me in */).isRequired,
-  handlePlayerAction: PropTypes.func.isRequired,
 };
 
 export default Player;

@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import styled from 'styled-components';
-  // convert Board class to TBoard type to avoid declaration issue with Board component
+// convert Board class to TBoard type to avoid declaration issue with Board component
 import { Board as TBoard, PokerGame } from '../../gameLogic/classes';
 import { stringifyCard } from '../../gameLogic/functions';
 
