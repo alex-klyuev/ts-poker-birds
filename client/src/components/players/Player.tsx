@@ -6,7 +6,7 @@ import PlayerActions from './PlayerActions';
 import { convertToDollars, stringifyCard } from '../../gameLogic/functions';
 // convert Player class to TPlayer type to avoid declaration issue with Player component
 import { Player as TPlayer, PokerGame } from '../../gameLogic/classes';
-import { PlayerActionsWrapper } from '../../gameLogic/types';
+import { PlayerActionWrapper } from '../../gameLogic/types';
 
 const Container = styled.div`
   width: 144px;
@@ -33,7 +33,7 @@ const Text = styled.div`
 interface Props {
   player: TPlayer;
   PG: PokerGame;
-  handlePlayerAction: (action: PlayerActionsWrapper) => void;
+  handlePlayerAction: (action: PlayerActionWrapper) => void;
 }
 
 const Player = (props: Props): ReactElement => {

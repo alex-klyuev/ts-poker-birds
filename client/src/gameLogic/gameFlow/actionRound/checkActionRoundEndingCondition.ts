@@ -1,4 +1,5 @@
 import { PokerGame } from '../../classes';
+import { ActionState } from '../../types';
 
 // Action round ending conditions fall into two categories:
 //  1. "No-raise": where there has been no raise and everyone checks or folds,
@@ -9,16 +10,16 @@ export const checkActionRoundEndingCondition = (PG: PokerGame): boolean => {
   let actionCounter2 = 0;
   for (let i = 0; i < PG.playerObjectArray.length; i += 1) {
     // handles both pre-flop and post-flop "no raise" situations
-    if (PG.playerObjectArray[i].actionState === 'call' || PG.playerObjectArray[i].actionState === 'fold'
-      || PG.playerObjectArray[i].actionState === 'check' || PG.playerObjectArray[i].actionState === '') {
+    if (PG.playerObjectArray[i].actionState === ActionState.Call || PG.playerObjectArray[i].actionState === ActionState.Fold
+      || PG.playerObjectArray[i].actionState === ActionState.Check || PG.playerObjectArray[i].actionState === ActionState.NoAction) {
       actionCounter1 += 1;
     }
 
     // JJ-COMMENT: if else instead of two if statements?
 
     // handles "raise" situations
-    if (PG.playerObjectArray[i].actionState === 'call' || PG.playerObjectArray[i].actionState === 'fold'
-      || PG.playerObjectArray[i].actionState === '') {
+    if (PG.playerObjectArray[i].actionState === ActionState.Call || PG.playerObjectArray[i].actionState === ActionState.Fold
+      || PG.playerObjectArray[i].actionState === ActionState.NoAction) {
       actionCounter2 += 1;
     }
   }
@@ -31,7 +32,7 @@ export const checkActionRoundEndingCondition = (PG: PokerGame): boolean => {
   }
 
   // raise scenario
-  if (actionCounter2 === PG.playerObjectArray.length - 1 && PG.playerObjectArray[PG.turn].actionState === 'raise') {
+  if (actionCounter2 === PG.playerObjectArray.length - 1 && PG.playerObjectArray[PG.turn].actionState === ActionState.Raise) {
     console.log('action round ended via raise scenario'); // no free cards baby!
     return true;
   }

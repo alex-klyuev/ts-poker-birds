@@ -2,13 +2,13 @@
 // It also holds the player methods that will alter the overall game state
 
 import { PokerGame } from './PokerGame';
-import { Card } from '../types';
+import { Card, ActionState } from '../types';
 
 export class Player {
   ID: number;
   stack: number;
   cards: Array<Card>;
-  actionState: string;
+  actionState: ActionState;
   potCommitment: number;
   inGame: boolean;
   showdownRank: Array<number>;
@@ -17,7 +17,7 @@ export class Player {
     this.ID = ID;
     this.stack = 0;
     this.cards = [];
-    this.actionState = '';
+    this.actionState = ActionState.NoAction;
     this.potCommitment = 0;
     this.inGame = true;
     this.showdownRank = [];
@@ -42,7 +42,7 @@ export class Player {
     this.stack = newStack;
     PG.pot += raiseAmount;
 
-    this.actionState = 'raise';
+    this.actionState = ActionState.Raise;
 
     // if the amount bet is greater than the previous bet and the minimum raise,
     // update the minimum raise. this should always occur unless
@@ -61,7 +61,7 @@ export class Player {
   }
 
   call(PG: PokerGame): void {
-    this.actionState = 'call';
+    this.actionState = ActionState.Call;
 
     // the amount that a call moves from stack to pot is equal to the previous bet
     // minus how much the player has already committed to the pot
@@ -79,12 +79,12 @@ export class Player {
   }
 
   check(): void {
-    this.actionState = 'check';
+    this.actionState = ActionState.Check;
   }
 
   // need code to take player out of the game in a fold.
   fold(): void {
-    this.actionState = 'fold';
+    this.actionState = ActionState.Fold;
     this.inGame = false;
     // set this equal to 0 so it doesn't display on the game output
     this.potCommitment = 0;

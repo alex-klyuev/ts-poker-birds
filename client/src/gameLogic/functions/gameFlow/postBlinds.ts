@@ -1,4 +1,5 @@
 import { PokerGame } from '../../classes';
+import { ActionState } from '../../types';
 import { incrementTurn } from './incrementTurn';
 
 export const postBlinds = (PG: PokerGame): void => {
@@ -6,14 +7,14 @@ export const postBlinds = (PG: PokerGame): void => {
   PG.minRaise = 0;
   PG.previousBet = 0;
   PG.playerObjectArray[PG.turn].raise(PG.smallBlind, PG);
-  PG.playerObjectArray[PG.turn].actionState = 'SB';
+  PG.playerObjectArray[PG.turn].actionState = ActionState.SmallBlind;
   incrementTurn(PG);
 
   // post big blind; vars are set to 0 to allow a raise (so that later bb can check at the end of pre-flop)
   PG.minRaise = 0;
   PG.previousBet = 0;
   PG.playerObjectArray[PG.turn].raise(PG.bigBlind, PG);
-  PG.playerObjectArray[PG.turn].actionState = 'BB';
+  PG.playerObjectArray[PG.turn].actionState = ActionState.BigBlind;
   incrementTurn(PG);
   PG.minRaise = PG.bigBlind;
   PG.previousBet = PG.bigBlind;

@@ -2,8 +2,7 @@ import React, { FormEvent } from 'react';
 import styled from 'styled-components';
 import { convertToCents } from '../../gameLogic/functions';
 import { PokerGame } from '../../gameLogic/classes';
-// convert PlayerActions enum to TPlayerActions to avoid declaration issue with PlayerACtions component
-import { PlayerActions as TPlayerActions, PlayerActionsWrapper } from '../../gameLogic/types';
+import { PlayerAction, PlayerActionWrapper, ActionState } from '../../gameLogic/types';
 
 
 // START HERE: broke the game with player actions modifications
@@ -34,16 +33,16 @@ const Input = styled.input`
 interface Props {
   PG: PokerGame;
   empty: boolean;
-  handlePlayerAction: (playerAction: PlayerActionsWrapper) => void;
+  handlePlayerAction: (playerAction: PlayerActionWrapper) => void;
 }
 
 interface State {
   value: string;
 }
 
-interface PlayerActionsValidationWrapper {
+interface PlayerActionValidationWrapper {
   valid: boolean;
-  playerAction?: PlayerActionsWrapper;
+  playerAction?: PlayerActionWrapper;
 }
 
 class PlayerActions extends React.Component<Props, State> {
@@ -67,7 +66,7 @@ class PlayerActions extends React.Component<Props, State> {
 
   // validate that player action is allowed, and return an object for use in App
   // to update the state
-  validatePlayerAction(action: TPlayerActions): PlayerActionsValidationWrapper {
+  validatePlayerAction(action: PlayerAction): PlayerActionValidationWrapper {
     const { PG } = this.props;
     const { value } = this.state;
     let numericInput = value;
@@ -75,21 +74,20 @@ class PlayerActions extends React.Component<Props, State> {
     // this multi-block if statement both validates the input
     // and returns call, check, or fold if it's one of those.
     // if it's a raise, it goes on to the next section to validate the amount
-    if (action === TPlayerActions.Call) {
+    if (action === PlayerAction.Call) {
       // validate that there is a raise on the board to be called.
       // Second part is to allow the SB to call when it is not equal to the big blind
 
       let raiseCounter = 0;
       for (let i = 0; i < PG.playerObjectArray.length; i += 1) {
         // this allows the small blind to call big blind as well
-        if (PG.playerObjectArray[i].actionState === 'raise' || (PG.playerObjectArray[i].actionState === 'SB')) {
+        if (PG.playerObjectArray[i].actionState === ActionState.Raise || (PG.playerObjectArray[i].actionState === ActionState.SmallBlind)) {
           raiseCounter += 1;
         }
       }
 
       // exception for situation where small blind is equal to big blind; SB cannot call there
-      // eslint-disable-next-line no-mixed-operators
-      if (raiseCounter === 0 || PG.playerObjectArray[PG.turn].actionState === 'SB' && PG.smallBlind === PG.bigBlind) {
+      if (raiseCounter === 0 || PG.playerObjectArray[PG.turn].actionState === ActionState.SmallBlind && PG.smallBlind === PG.bigBlind) {
         alert('You cannot call here.');
 
         return { valid: false };
@@ -97,17 +95,17 @@ class PlayerActions extends React.Component<Props, State> {
       return {
         valid: true,
         playerAction: {
-          actionType: TPlayerActions.Call
+          actionType: PlayerAction.Call
         }
       };
-    } if (action === TPlayerActions.Fold) {
+    } if (action === PlayerAction.Fold) {
       return {
         valid: true,
         playerAction: {
-          actionType: TPlayerActions.Fold
+          actionType: PlayerAction.Fold
         }
       };
-    } if (action === TPlayerActions.Check) {
+    } if (action === PlayerAction.Check) {
       // validate that player is allowed to check
       if (PG.allowCheck === false) {
         alert('You cannot check here.');
@@ -116,10 +114,10 @@ class PlayerActions extends React.Component<Props, State> {
       return {
         valid: true,
         playerAction: {
-          actionType: TPlayerActions.Fold
+          actionType: PlayerAction.Fold
         }
       };
-    } if (action !== TPlayerActions.Raise) {
+    } if (action !== PlayerAction.Raise) {
       return { valid: false };
     }
 
@@ -131,7 +129,7 @@ class PlayerActions extends React.Component<Props, State> {
       return {
         valid: true,
         playerAction: {
-          actionType: TPlayerActions.Raise,
+          actionType: PlayerAction.Raise,
           raiseAmount
         }
       };
@@ -147,7 +145,7 @@ class PlayerActions extends React.Component<Props, State> {
     return {
       valid: true,
       playerAction: {
-        actionType: TPlayerActions.Raise,
+        actionType: PlayerAction.Raise,
         raiseAmount
       }
     };
@@ -166,11 +164,11 @@ class PlayerActions extends React.Component<Props, State> {
           <Button
             type="button"
             onClick={() => {
-              const inputAction = this.validatePlayerAction(TPlayerActions.Fold);
+              const inputAction = this.validatePlayerAction(PlayerAction.Fold);
               if (!inputAction.valid) {
                 return;
               }
-              handlePlayerAction(inputAction.playerAction as PlayerActionsWrapper);
+              handlePlayerAction(inputAction.playerAction as PlayerActionWrapper);
             }}
           >
             Fold
@@ -178,11 +176,11 @@ class PlayerActions extends React.Component<Props, State> {
           <Button
             type="button"
             onClick={() => {
-              const inputAction = this.validatePlayerAction(TPlayerActions.Check);
+              const inputAction = this.validatePlayerAction(PlayerAction.Check);
               if (!inputAction.valid) {
                 return;
               }
-              handlePlayerAction(inputAction.playerAction as PlayerActionsWrapper);
+              handlePlayerAction(inputAction.playerAction as PlayerActionWrapper);
             }}
           >
             Check
@@ -192,11 +190,11 @@ class PlayerActions extends React.Component<Props, State> {
           <Button
             type="button"
             onClick={() => {
-              const inputAction = this.validatePlayerAction(TPlayerActions.Call);
+              const inputAction = this.validatePlayerAction(PlayerAction.Call);
               if (!inputAction.valid) {
                 return;
               }
-              handlePlayerAction(inputAction.playerAction as PlayerActionsWrapper);
+              handlePlayerAction(inputAction.playerAction as PlayerActionWrapper);
             }}
           >
             Call
@@ -204,11 +202,11 @@ class PlayerActions extends React.Component<Props, State> {
           <Button
             type="button"
             onClick={() => {
-              const inputAction = this.validatePlayerAction(TPlayerActions.Raise);
+              const inputAction = this.validatePlayerAction(PlayerAction.Raise);
               if (!inputAction.valid) {
                 return;
               }
-              handlePlayerAction(inputAction.playerAction as PlayerActionsWrapper);
+              handlePlayerAction(inputAction.playerAction as PlayerActionWrapper);
             }}
           >
             Bet

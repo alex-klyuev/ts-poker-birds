@@ -1,4 +1,5 @@
 import { PokerGame } from '../../classes';
+import { ActionState } from '../../types';
 import { incrementTurn, findNextPlayer } from '../../functions';
 
 // this function restarts the following action round
@@ -6,7 +7,7 @@ export const refreshActionRound = (PG: PokerGame): void => {
   // clear pot commitment and action states; cards remain the same; reset PG.minraise
   for (let i = 0; i < PG.playerObjectArray.length; i += 1) {
     PG.playerObjectArray[i].potCommitment = 0;
-    PG.playerObjectArray[i].actionState = '';
+    PG.playerObjectArray[i].actionState = ActionState.NoAction;
   }
   PG.previousBet = 0;
   PG.minRaise = PG.bigBlind;
@@ -27,8 +28,4 @@ export const refreshActionRound = (PG: PokerGame): void => {
 
   // allow checking at beginning of round
   PG.allowCheck = true;
-
-  // unnecessary for react:
-  // outputGameStatus(PG);
-  // outputPlayerInquiry(PG);
 };
