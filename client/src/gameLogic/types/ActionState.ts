@@ -11,5 +11,6 @@ export enum ActionState {
   Check = 'CHECK',
   SmallBlind = 'SMALLBLIND',
   BigBlind = 'BIGBLIND',
-  NoAction = 'NOACTION'
+  NoAction = 'NOACTION',
+  Standby = 'STANDBY'
 }

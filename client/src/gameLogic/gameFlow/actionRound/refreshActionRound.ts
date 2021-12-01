@@ -22,7 +22,7 @@ export const refreshActionRound = (PG: PokerGame): void => {
   // be improved to be more clear). Still a blank string so that nothing is output to the board
   for (let i = 0; i < PG.playerObjectArray.length; i += 1) {
     if (PG.playerObjectArray[i].inGame) {
-      PG.playerObjectArray[i].actionState = ' ';
+      PG.playerObjectArray[i].actionState = ActionState.Standby;
     }
   }
 

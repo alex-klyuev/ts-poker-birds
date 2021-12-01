@@ -1,5 +1,6 @@
 import { PokerGame } from '../../classes';
 import { convertToDollars } from '../../functions';
+import { ActionState } from '../../types';
 
 // this function will end the dealer round when everyone except one person has folded.
 // That person will win the pot. This is one of two ways a dealer round can end;
@@ -8,7 +9,7 @@ export const checkDealerRoundEndingCondition = (PG: PokerGame): boolean => {
   let dealerCounter = 0;
   let winnerIndex = -1;
   for (let i = 0; i < PG.playerObjectArray.length; i += 1) {
-    if (PG.playerObjectArray[i].actionState === 'fold' || PG.playerObjectArray[i].actionState === '') {
+    if (PG.playerObjectArray[i].actionState === ActionState.Fold || PG.playerObjectArray[i].actionState === ActionState.NoAction) {
       dealerCounter += 1;
     } else {
       winnerIndex = i;

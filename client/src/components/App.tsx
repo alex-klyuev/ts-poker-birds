@@ -5,7 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-// classes & functions
+// classes, functions, and types
 import  { PokerGame, Player, Board } from '../gameLogic/classes';
 import {
   addToBoard,
@@ -22,14 +22,22 @@ import {
   checkDealerRoundEndingCondition,
   refreshDealerRound
 } from '../gameLogic/gameFlow';
+import { ActionState, PlayerAction, PlayerActionWrapper } from '../gameLogic/types';
 // components
 import StartUpForm from './StartUpForm';
 import PlayerContainer from './PlayerContainer';
 import TableContainer from './TableContainer';
 import MessageBox from './MessageBox';
 
-class App extends React.Component {
-  constructor(props) {
+
+interface Props {
+  gameId: number;
+}
+
+type State = PokerGame;
+
+class App extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     // gameId associated with session url and backend
@@ -50,7 +58,7 @@ class App extends React.Component {
     this.handlePlayerAction = this.handlePlayerAction.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     // make request to API
     // if gameUnderway = true, render game view and populate game
     // if gameUnderway = false, render startup form view
@@ -76,20 +84,20 @@ class App extends React.Component {
 
   // --- PLAYER INTERFACE & GAME FLOW FUNCTIONS ---
 
-  handlePlayerAction(action) {
+  handlePlayerAction(action: PlayerActionWrapper): void {
     const PG = this.state;
     // eslint-disable-next-line default-case
-    switch (action[0]) {
-      case 'call':
+    switch (action.actionType) {
+      case PlayerAction.Call:
         PG.playerObjectArray[PG.turn].call(PG);
         break;
-      case 'raise':
-        PG.playerObjectArray[PG.turn].raise(action[1], PG);
+      case PlayerAction.Raise:
+        PG.playerObjectArray[PG.turn].raise(action.raiseAmount as number, PG);
         break;
-      case 'fold':
+      case PlayerAction.Fold:
         PG.playerObjectArray[PG.turn].fold();
         break;
-      case 'check':
+      case PlayerAction.Check:
         PG.playerObjectArray[PG.turn].check();
         break;
     }
@@ -104,7 +112,7 @@ class App extends React.Component {
   }
 
   // this function handles the dealer rounds, action rounds, and showdown
-  handleGameFlow(PG) {
+  handleGameFlow(PG: PokerGame): void {
     const { gameId } = this.props;
 
     // handle the pre-flop
@@ -114,10 +122,10 @@ class App extends React.Component {
       let preflopCounter = 0;
 
       // toggles the check state for the small blind if it's equal to the big blind
-      if (PG.playerObjectArray[PG.turn].actionState === 'SB' && PG.smallBlind === PG.bigBlind) {
+      if (PG.playerObjectArray[PG.turn].actionState === ActionState.SmallBlind && PG.smallBlind === PG.bigBlind) {
         // count active raises on board; if the SB & BB are the only ones, they can check
         for (let i = 0; i < PG.playerObjectArray.length; i += 1) {
-          if (PG.playerObjectArray[i].actionState !== 'raise') {
+          if (PG.playerObjectArray[i].actionState !== ActionState.Raise) {
             preflopCounter += 1;
           }
         }
@@ -132,10 +140,10 @@ class App extends React.Component {
 
       // edge case: big blind re-raised and all other players called. Hmmm
       // TODO(anyone): Not sure if this is a TODO still or not? ^^
-      if (PG.playerObjectArray[PG.turn].actionState === 'BB' && PG.smallBlind !== PG.bigBlind) {
+      if (PG.playerObjectArray[PG.turn].actionState === ActionState.BigBlind && PG.smallBlind !== PG.bigBlind) {
         // count active raises on board; if the BB's is the only one, they can check
         for (let i = 0; i < PG.playerObjectArray.length; i += 1) {
-          if (PG.playerObjectArray[i].actionState !== 'raise') {
+          if (PG.playerObjectArray[i].actionState !== ActionState.Raise) {
             preflopCounter += 1;
           }
         }

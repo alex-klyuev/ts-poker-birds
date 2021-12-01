@@ -4,13 +4,14 @@ import { buildDeck,
   incrementTurn,
   postBlinds
 } from '../../functions';
+import { ActionState } from '../../types';
 
 // this function restarts the following dealer round
 export const refreshDealerRound = (PG: PokerGame): void => {
   // refresh all these variables.
   for (let i = 0; i < PG.playerObjectArray.length; i += 1) {
     PG.playerObjectArray[i].potCommitment = 0;
-    PG.playerObjectArray[i].actionState = '';
+    PG.playerObjectArray[i].actionState = ActionState.NoAction;
     PG.playerObjectArray[i].cards = [];
     PG.playerObjectArray[i].inGame = true;
 
@@ -41,7 +42,7 @@ export const refreshDealerRound = (PG: PokerGame): void => {
 
   // edge case scenario where there are only 2 players and sb = bb,
   // first player to act is sb. this allows them to check
-  if (PG.playerObjectArray[PG.turn].actionState === 'SB' && PG.smallBlind === PG.bigBlind) {
+  if (PG.playerObjectArray[PG.turn].actionState === ActionState.SmallBlind && PG.smallBlind === PG.bigBlind) {
     PG.allowCheck = true;
   }
 
