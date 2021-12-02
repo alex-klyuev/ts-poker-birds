@@ -2,8 +2,7 @@
 // PG = poker game -> replacement for the state for use within functions
 
 // libs
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactElement } from 'react';
 import axios from 'axios';
 // classes, functions, and types
 import  { PokerGame, Player, Board } from '../gameLogic/classes';
@@ -34,9 +33,10 @@ interface Props {
   gameId: number;
 }
 
-type State = PokerGame;
+class App extends React.Component<Props, PokerGame> {
 
-class App extends React.Component<Props, State> {
+  public readonly state: PokerGame;
+
   constructor(props: Props) {
     super(props);
 
@@ -198,11 +198,11 @@ class App extends React.Component<Props, State> {
         const winHandRank = pickWinner(PG);
 
         // give the player the pot and reset it to 0
-        PG.playerObjectArray[winHandRank.playerIndex].stack += PG.pot;
+        PG.playerObjectArray[winHandRank.playerIndex as number].stack += PG.pot;
         PG.pot = 0;
 
         // state the winner and how they won
-        PG.message = `Player ${PG.playerObjectArray[winHandRank.playerIndex].ID}`;
+        PG.message = `Player ${PG.playerObjectArray[winHandRank.playerIndex as number].ID}`;
         PG.message += ` won with a ${rankToHandStr(winHandRank.rank[0])}`;
 
         // reset the dealer round
@@ -224,13 +224,14 @@ class App extends React.Component<Props, State> {
 
   // --- GAME STARTUP FUNCTIONS ---
 
-  registerNumPlayers(numPlayers) {
+  registerNumPlayers(numPlayersInput: string): void {
+    const numPlayers = Number(numPlayersInput);
     const playerObjectArray = [];
-    for (let i = 1; i <= Number(numPlayers); i += 1) {
+    for (let i = 1; i <= numPlayers; i += 1) {
       playerObjectArray.push(new Player(i));
     }
     this.setState({
-      numPlayers: Number(numPlayers),
+      numPlayers,
       playerObjectArray,
     });
   }
@@ -238,8 +239,8 @@ class App extends React.Component<Props, State> {
   // the state manages the dollar values as cents
   // (e.g. $20 is saved as 2000)
   // this allows players to play with cents without having to deal with decimals in the code
-  registerBuyIn(buyIn) {
-    buyIn = convertToCents(Number(buyIn));
+  registerBuyIn(buyInInput: string): void {
+    const buyIn = convertToCents(Number(buyInInput));
 
     // assign the buy in to each player
     const { playerObjectArray } = this.state;
@@ -253,21 +254,21 @@ class App extends React.Component<Props, State> {
     });
   }
 
-  registerSmallBlind(smallBlind) {
+  registerSmallBlind(smallBlindInput: string): void {
     this.setState({
-      smallBlind: convertToCents(Number(smallBlind)),
+      smallBlind: convertToCents(Number(smallBlindInput)),
     });
   }
 
-  registerBigBlind(bigBlind) {
+  registerBigBlind(bigBlindInput: string): void {
     this.setState({
-      bigBlind: convertToCents(Number(bigBlind)),
+      bigBlind: convertToCents(Number(bigBlindInput)),
     });
   }
 
   // --- START & STOP GAME FUNCTIONS ---
 
-  startGame() {
+  startGame(): void {
     const { gameId } = this.props;
     const PG = this.state;
 
@@ -289,7 +290,7 @@ class App extends React.Component<Props, State> {
       });
   }
 
-  endGame() {
+  endGame(): void {
     const { gameId } = this.props;
     const PG = new PokerGame(gameId);
 
@@ -305,7 +306,7 @@ class App extends React.Component<Props, State> {
 
   // --- HELPER FUNCTIONS ---
 
-  convertData(PG) {
+  convertData(PG: PokerGame): PokerGame {
     // iterate through all players
     // create new player instances so that they have the player methods
     // overwrite player properties with the data in the database
@@ -325,7 +326,7 @@ class App extends React.Component<Props, State> {
 
   // --- RENDER VIEW FUNCTIONS ---
 
-  renderGameView() {
+  renderGameView(): ReactElement {
     const PG = this.state;
 
     return (
@@ -340,7 +341,7 @@ class App extends React.Component<Props, State> {
     );
   }
 
-  renderStartUpView() {
+  renderStartUpView(): ReactElement {
     const {
       numPlayers,
       buyIn,
@@ -366,7 +367,7 @@ class App extends React.Component<Props, State> {
     );
   }
 
-  render() {
+  render(): ReactElement {
     const { gameUnderway } = this.state;
     if (gameUnderway) {
       return this.renderGameView();
@@ -374,9 +375,5 @@ class App extends React.Component<Props, State> {
     return this.renderStartUpView();
   }
 }
-
-App.propTypes = {
-  gameId: PropTypes.number.isRequired,
-};
 
 export default App;

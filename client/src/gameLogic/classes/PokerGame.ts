@@ -42,7 +42,7 @@ export class PokerGame {
     this.turn = 0;
     this.pot = 0;
     this.actionRoundState = 0; // 0 = pre-flop, 1 = flop, 2 = turn, 3 = river
-    this.board = new Board();
+    this.board = new Board([], 0);
     this.deckArray = [];
     this.minRaise = 0;
     this.previousBet = 0;

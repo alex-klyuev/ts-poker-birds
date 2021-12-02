@@ -5,7 +5,7 @@ export class Board {
   // the index of the next open spot on the board
   index: number;
 
-  constructor(cards = [], index = 0) {
+  constructor(cards: Array<Card>, index: number) {
     this.cards = cards;
     this.index = index;
   }
