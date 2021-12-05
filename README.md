@@ -15,17 +15,27 @@ Card Graphics created by cardsJS:
 
 ## Installation for Local Use
 
-From within the root directory:
+In server/database/index.js, uncomment the first mongoose connection line and comment out the second mongoose connection line.
 
+From within the root directory, open two terminal windows.
+
+For server:
 ```sh
+cd server
+npm install
+npm start
+```
+
+For client:
+```sh
+cd client
 npm install
 npm run build
 npm start
 ```
 
-In database/index.js, uncomment the first mongoose connection line and comment out the second mongoose connection line.
-
 Begin a game session at localhost:3000/:gameId
+localhost:3000 defers to gameID = 0
 
 **Try out the Command Line Node game!**
 

@@ -12,18 +12,6 @@ export const addToBoard = (PG: PokerGame): void => {
   board.iterateIndex();
 };
 
-// export const addToBoard = (PG: PokerGame): void => {
-//   const randInt = randDeckArrayIdx(PG);
-//   for (let i = 0; i < 5; i += 1) {
-//     if (PG.board.cards[i] === undefined) {
-//       PG.board.cards[i] = PG.deckArray[randInt];
-//       PG.deckArray.splice(randInt, 1);
-//       console.log(PG.board.cards);
-//       return;
-//     }
-//   }
-// };
-
 export const flop = (PG: PokerGame): void => {
   addToBoard(PG);
   addToBoard(PG);

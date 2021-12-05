@@ -87,6 +87,7 @@ class PlayerActions extends React.Component<Props, State> {
       }
 
       // exception for situation where small blind is equal to big blind; SB cannot call there
+      // eslint-disable-next-line no-mixed-operators
       if (raiseCounter === 0 || PG.playerObjectArray[PG.turn].actionState === ActionState.SmallBlind && PG.smallBlind === PG.bigBlind) {
         alert('You cannot call here.');
 
@@ -114,7 +115,7 @@ class PlayerActions extends React.Component<Props, State> {
       return {
         valid: true,
         playerAction: {
-          actionType: PlayerAction.Fold
+          actionType: PlayerAction.Check
         }
       };
     } if (action !== PlayerAction.Raise) {
