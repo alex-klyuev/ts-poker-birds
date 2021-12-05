@@ -30,6 +30,19 @@ const Text = styled.div`
   margin-left: 5px;
 `;
 
+interface Map {
+  [index: string]: string;
+}
+
+const actionStateMessageMap: Map= {
+  RAISE: 'Raise',
+  CALL: 'Call',
+  FOLD: 'Fold',
+  CHECK: 'Check',
+  NOACTION: '',
+  STANDBY: ''
+};
+
 interface Props {
   player: TPlayer;
   PG: PokerGame;
@@ -126,7 +139,7 @@ const Player = (props: Props): ReactElement => {
       </Text>
       {cardView}
       <Text>
-        {player.actionState}
+        {actionStateMessageMap[player.actionState]}
       </Text>
       {potCommitmentView}
       {minBetView}

@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import styled from 'styled-components';
 // convert Board class to TBoard type to avoid declaration issue with Board component
-import { Board as TBoard, PokerGame } from '../../gameLogic/classes';
+import { PokerGame } from '../../gameLogic/classes';
 import { stringifyCard } from '../../gameLogic/functions';
 
 const Deck = styled.div`
@@ -26,7 +26,6 @@ const CardContainer = styled.div`
 
 interface Props {
   PG: PokerGame;
-  board: TBoard;
 }
 
 const Board = (props: Props): ReactElement => {

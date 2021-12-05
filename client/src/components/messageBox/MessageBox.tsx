@@ -1,7 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { ReactElement } from 'react';
 import styled from 'styled-components';
-import EndGame from './table/EndGame';
+import EndGame from './EndGame';
 
 const Container = styled.div`
   height: 100px;
@@ -14,7 +13,12 @@ const Line = styled.h2`
   text-align: center;
 `;
 
-const MessageBox = (props) => {
+interface Props {
+  message: string;
+  endGame: () => void;
+}
+
+const MessageBox = (props: Props): ReactElement => {
   const { message, endGame } = props;
   const lines = message.split('\n');
   return (
@@ -25,11 +29,6 @@ const MessageBox = (props) => {
       </Line>
     </Container>
   );
-};
-
-MessageBox.propTypes = {
-  message: PropTypes.string.isRequired,
-  endGame: PropTypes.func.isRequired,
 };
 
 export default MessageBox;

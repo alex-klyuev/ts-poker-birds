@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { ReactElement } from 'react';
 import styled from 'styled-components';
-import Board from './table/Board';
-import Pot from './table/Pot';
+import { PokerGame } from '../../gameLogic/classes';
+import Board from './Board';
+import Pot from './Pot';
 
 const Container = styled.div`
   display: flex;
@@ -14,7 +14,11 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const TableContainer = (props) => {
+interface Props {
+  PG: PokerGame;
+}
+
+const TableContainer = (props: Props): ReactElement => {
   const { PG } = props;
   return (
     <Container>
@@ -24,10 +28,6 @@ const TableContainer = (props) => {
       </div>
     </Container>
   );
-};
-
-TableContainer.propTypes = {
-  PG: PropTypes.shape(/* fill me in */).isRequired,
 };
 
 export default TableContainer;

@@ -1,9 +1,7 @@
 /* eslint-disable no-alert */
 // TO-DO: enable form submitting using enter key
 
-/* eslint-disable max-len */
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FormEvent, ReactElement } from 'react';
 import styled from 'styled-components';
 import { convertToCents, convertToDollars } from '../gameLogic/functions';
 
@@ -16,10 +14,41 @@ const Input = styled.span`
 // and App manages the actual game state including these 4 variables.
 // The props are passed down from the "App" state for use in user input validation here
 
-class StartUpForm extends React.Component {
+interface Props {
+  numPlayers: number;
+  buyIn: number;
+  smallBlind: number;
+  bigBlind: number;
+  registerNumPlayers: (numPlayersInput: string) => void;
+  registerBuyIn: (buyInInput: string) => void;
+  registerSmallBlind: (smallBlindInput: string) => void;
+  registerBigBlind: (bigBlindInput: string) => void;
+  startGame: () => void;
+}
+
+interface SearchObject {
+  [key: string]: number | string;
+}
+
+interface State extends SearchObject {
+  numPlayers: string;
+  buyIn: string;
+  smallBlind: string;
+  bigBlind: string;
+}
+
+class StartUpForm extends React.Component<Props, State> {
+
+  public readonly state: State = {
+    numPlayers: '',
+    buyIn: '',
+    smallBlind: '',
+    bigBlind: '',
+  };
+
   // validation functions that don't require reference to instance
 
-  static validateNumPlayers(input) {
+  static validateNumPlayers(input: string): boolean {
     const numPlayers = Number(input);
     if (Number.isNaN(numPlayers) || !Number.isInteger(numPlayers) || numPlayers < 2 || numPlayers > 8) {
       alert('Please enter a valid input');
@@ -28,7 +57,7 @@ class StartUpForm extends React.Component {
     return true;
   }
 
-  static validateBuyIn(input) {
+  static validateBuyIn(input: string): boolean {
     const buyIn = Number(input);
     if (Number.isNaN(buyIn) || !Number.isInteger(buyIn) || buyIn < 1 || buyIn > 999) {
       alert('Please enter a valid input');
@@ -37,27 +66,21 @@ class StartUpForm extends React.Component {
     return true;
   }
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
-
-    this.state = {
-      numPlayers: '',
-      buyIn: '',
-      smallBlind: '',
-      bigBlind: '',
-    };
 
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  handleInputChange(e) {
+  handleInputChange(e: FormEvent): void {
+    const target = e.target as HTMLInputElement;
     this.setState({
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     });
   }
 
   // validation functions that do require reference to instance
-  validateSmallBlind(input) {
+  validateSmallBlind(input: string): boolean {
     const { buyIn } = this.props;
     if (buyIn === -1) {
       alert('Please enter a buy-in first');
@@ -71,7 +94,7 @@ class StartUpForm extends React.Component {
     return true;
   }
 
-  validateBigBlind(input) {
+  validateBigBlind(input: string): boolean {
     const { buyIn, smallBlind } = this.props;
     if (buyIn === -1) {
       alert('Please enter a buy-in first');
@@ -90,7 +113,7 @@ class StartUpForm extends React.Component {
     return true;
   }
 
-  validateAll() {
+  validateAll(): boolean {
     const {
       numPlayers,
       buyIn,
@@ -104,20 +127,20 @@ class StartUpForm extends React.Component {
     return true;
   }
 
-  clearForm(field) {
+  clearForm(field: string): void {
     this.setState({
       [field]: '',
     });
   }
 
-  renderInput(field) {
+  renderInput(field: string): ReactElement | null {
     const {
       numPlayers,
       buyIn,
       smallBlind,
       bigBlind,
     } = this.props;
-    const inputs = {
+    const inputs: SearchObject = {
       numPlayers,
       buyIn: convertToDollars(buyIn),
       smallBlind: convertToDollars(smallBlind),
@@ -133,7 +156,7 @@ class StartUpForm extends React.Component {
     );
   }
 
-  render() {
+  render(): ReactElement {
     const {
       registerNumPlayers,
       registerBuyIn,
@@ -287,17 +310,5 @@ class StartUpForm extends React.Component {
     );
   }
 }
-
-StartUpForm.propTypes = {
-  registerNumPlayers: PropTypes.func.isRequired,
-  registerBuyIn: PropTypes.func.isRequired,
-  registerSmallBlind: PropTypes.func.isRequired,
-  registerBigBlind: PropTypes.func.isRequired,
-  startGame: PropTypes.func.isRequired,
-  numPlayers: PropTypes.number.isRequired,
-  buyIn: PropTypes.number.isRequired,
-  smallBlind: PropTypes.number.isRequired,
-  bigBlind: PropTypes.number.isRequired,
-};
 
 export default StartUpForm;

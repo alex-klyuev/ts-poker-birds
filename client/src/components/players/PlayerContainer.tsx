@@ -1,7 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { ReactElement } from 'react';
 import styled from 'styled-components';
-import Player from './players/Player';
+import Player from './Player';
+import { PokerGame } from '../../gameLogic/classes';
+import { PlayerActionWrapper } from '../../gameLogic/types';
 
 const Container = styled.div`
   display: flex;
@@ -13,7 +14,12 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const PlayerContainer = (props) => {
+interface Props {
+  PG: PokerGame;
+  handlePlayerAction: (action: PlayerActionWrapper) => void;
+}
+
+const PlayerContainer = (props: Props): ReactElement => {
   const {
     PG,
     handlePlayerAction,
@@ -31,11 +37,6 @@ const PlayerContainer = (props) => {
       ))}
     </Container>
   );
-};
-
-PlayerContainer.propTypes = {
-  PG: PropTypes.shape(/* fill me in */).isRequired,
-  handlePlayerAction: PropTypes.func.isRequired,
 };
 
 export default PlayerContainer;

@@ -24,9 +24,9 @@ import {
 import { ActionState, PlayerAction, PlayerActionWrapper } from '../gameLogic/types';
 // components
 import StartUpForm from './StartUpForm';
-import PlayerContainer from './PlayerContainer';
-import TableContainer from './TableContainer';
-import MessageBox from './MessageBox';
+import PlayerContainer from './players/PlayerContainer';
+import TableContainer from './table/TableContainer';
+import MessageBox from './messageBox/MessageBox';
 
 
 interface Props {
